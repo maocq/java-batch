@@ -16,3 +16,5 @@ project(':model').projectDir = file('./domain/model')
 project(':usecase').projectDir = file('./domain/usecase')
 include ':batch'
 project(':batch').projectDir = file('./infrastructure/entry-points/batch')
+include ':dynamo-db'
+project(':dynamo-db').projectDir = file('./infrastructure/driven-adapters/dynamo-db')
