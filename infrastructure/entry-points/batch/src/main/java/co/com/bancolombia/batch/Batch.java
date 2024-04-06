@@ -49,11 +49,15 @@ public class Batch {
     }
 
     void dynamodb() {
-        try (var executor = Executors.newFixedThreadPool(200)){
+        try (var executor = Executors.newFixedThreadPool(100)){
             IntStream.range(0, 100_000)
                     .forEach(i -> {
                         executor.submit(() -> {
-                            balanceRepository.put(Integer.toString(i));
+                            try {
+                                balanceRepository.put(Integer.toString(i));
+                            } catch (Exception e) {
+                                log.warning(e.getMessage());
+                            }
                         });
                     });
         }
