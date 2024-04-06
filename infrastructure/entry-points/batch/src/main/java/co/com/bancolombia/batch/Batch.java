@@ -1,6 +1,7 @@
 package co.com.bancolombia.batch;
 
 import co.com.bancolombia.model.balance.gateways.BalanceRepository;
+import co.com.bancolombia.model.info.gateways.InfoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +17,7 @@ import java.util.stream.IntStream;
 public class Batch {
 
     private final BalanceRepository balanceRepository;
+    private final InfoService infoService;
 
     @Bean
     public int startBatch(@Value("${batch.operation}") String batchOperation) {
@@ -27,6 +29,9 @@ public class Batch {
                 break;
             case "dynamodb":
                 dynamodb();
+                break;
+            case "http":
+                http();
                 break;
             default:
                 log.warning("Invalid operation");
@@ -55,6 +60,22 @@ public class Batch {
                         executor.submit(() -> {
                             try {
                                 balanceRepository.put(Integer.toString(i));
+                            } catch (Exception e) {
+                                log.warning(e.getMessage());
+                            }
+                        });
+                    });
+        }
+    }
+
+    void http() {
+        //try (var executor = Executors.newVirtualThreadPerTaskExecutor()){
+        try (var executor = Executors.newFixedThreadPool(200)){
+            IntStream.range(0, 1_000)
+                    .forEach(i -> {
+                        executor.submit(() -> {
+                            try {
+                                infoService.get();
                             } catch (Exception e) {
                                 log.warning(e.getMessage());
                             }

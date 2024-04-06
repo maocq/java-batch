@@ -13,5 +13,8 @@ spring:
     include: null
 aws:
   region: "us-east-1"
+adapter:
+  restconsumer:
+    url: "http://54.221.139.10:3000/0"
 batch:
-  operation: "dynamodb"
+  operation: "http"
