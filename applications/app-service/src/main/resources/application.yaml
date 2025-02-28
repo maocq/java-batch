@@ -17,4 +17,4 @@ adapter:
   restconsumer:
     url: "http://54.221.139.10:3000/0"
 batch:
-  operation: "http"
+  operation: "demo"
